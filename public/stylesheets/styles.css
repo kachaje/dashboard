@@ -1,0 +1,130 @@
+
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+}
+
+#calender {
+    width: 200px;
+    font-family: ms sans serif, sans serif;
+    padding:10px;
+}
+
+#calenderTable {
+    border-style: outset;
+    background-color: white;
+    z-index: 1;
+    top: 0px;
+    left: 0px;
+    font-size: 1.0em;
+    padding:15px;
+    border:1px solid #dddd3d;
+}
+
+#calenderTableHead TR {
+    background-color: #fff;
+}
+
+#calenderTableDays TR {
+    background-color: #fb8404;
+    color: white;
+    text-align:center;
+}
+
+#selectMonth {
+    font-size:1.2em;
+    background-color: #fff;
+    color: #76684e;
+    border: 1px solid #fff;
+    padding:5px;
+    float:right;
+}
+
+#selectYear {
+    font-size:1.2em;
+    background-color: #fff;
+    color: #76684e;
+    border: 1px solid #fff;
+    padding:5px;
+    float:right;
+    text-align:center;
+}
+
+.normalDay {
+    border: 1px dotted #dddd3d;
+    cursor: pointer;
+    background-color:#fff;
+    height:50px;
+}
+
+.hlDay {
+    border: 1px black;
+    background-color: #dddd3d;
+    color: #000;
+    cursor: pointer;
+    height:50px;
+}
+
+.toDay {
+    border: 1px solid #00f;
+    background-color: #99f;
+    color: #00f;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.choosenDay {
+    border: 3px #fb8404 solid;
+    background-color: #fff;
+    color: #fb8404;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#eventSummary {
+     display:none;
+     position:absolute;
+     width:400px;
+     height:200px;
+     border: 3px #fb8404 solid;
+     background-color: #fff;
+     overflow:auto;
+}
+
+.header-cell {
+    width:60px;
+}
+
+.ulHeading {
+    color:#fb8404;
+    text-decoration:underline;
+    font-weight:bold;
+}
+
+a:link {
+	text-decoration: none;
+	color: #00f;
+}
+a:visited {
+	text-decoration: none;
+	color: #00f;
+}
+a:hover {
+	text-decoration: underline;
+	color: #00f;
+}
+a:active {
+	text-decoration: none;
+	color: #00f;
+}
+
+.hover {
+    -moz-border-radius:10px;
+    opacity: 0.95;
+    width: 200px;
+    height: 100px;
+    border:1px solid #33f;
+    background-color: #99f;
+    position:absolute;
+    padding:10px;
+}

@@ -1,0 +1,426 @@
+
+
+<table border="0" width="100%">
+  <tr>
+    <td style="border: 1px solid #dd3;">
+      <img alt="logo" src="/images/logo.jpg" />
+    </td>
+    <td style="border-bottom:olive 1px dotted; background-color:#dddd3d; min-width:600px; width:90%;">
+      <div>
+        <span style="float:right; font-size:1.8em;
+              color:#fff; font-family:arial;
+              margin-top:5px; margin-right:15px;">
+          District Details
+        </span>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" style="border: 1px solid #dd3;">
+      <button onclick="current_level += 0.1; SVGscale(current_level);"
+              style="float:left; margin:5px; cursor:pointer;">
+        <img src="/images/zoomin.gif" alt="zoom in" />
+      </button>
+      <button onclick="current_level = 0.7; SVGscale(current_level);"
+              style="left:85px; position:absolute; margin:5px; cursor:pointer;">
+        <span>100%</span>
+      </button>
+      <button onclick="current_level -= 0.1; SVGscale(current_level);"
+              style="left:170px; position:absolute; margin:5px; cursor:pointer;">
+        <img src="/images/zoomout.gif" alt="zoom out" />
+      </button>
+      <div id="district-label" style="float:right; padding:10px; font-size:1.2em;">
+      </div>
+    </td>
+    <td rowspan="2" style="border: 1px solid #dd3; padding:5px;" valign="top">
+      <table border="0" width="100%" cellpadding="5" cellspacing="0">
+        <tr>
+          <td id="sitesLabel" style="color:#76684E; font-size:1.4em;
+              border-right:1px dotted #76684E;
+              border-bottom:1px dotted #76684E;">
+            Lilongwe
+          </td>
+          <td id="centerLabel" style="color:#76684E; font-size:1.4em;
+              border-bottom:1px dotted #76684E;">
+            Select Site to View
+          </td>
+        </tr>
+        <tr>
+          <td id="districtDetails" style="border-right:1px dotted #76684E;" valign="top">
+            &nbsp;
+          </td>
+          <td id="siteDetails" align="center" valign="top" style="padding-top:20px;">
+            <div id="placeholder" style="width:600px;height:300px;"></div>
+            <hr width="90%" style="margin:20px;">
+
+            <form id="frmNewSite" action="/district/create_site" method="post">
+              <table>
+                <tr>
+                  <td align="center">
+                    Sitename
+                  </td>
+                  <td>
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type="text" id="sitename" name="sitename" value="" />
+                    <input type="hidden" id="district" name="district" value="<%= params[:district]  %> " />
+                  </td>
+                  <td align="center">
+                    <input type="button" style="color:white; background-color:#fb8404;
+                           font-size:1.0em; -moz-border-radius:18px; padding:5px;"
+                           onclick="if(getID('sitename').value.match(/^(\s+)?$/)) {
+                             alert('Please enter a valid sitename first before proceeding!');
+                             return;
+                           } else {
+                             getID('frmNewSite').submit();
+                           }" value="Add New Site" />
+
+                  </td>
+                </tr>
+              </table>
+            </form>
+
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <div>
+        <object type="image/svg+xml" data="" wmode="transparent"
+                style="padding:5px; overflow:hidden; background-color:white;
+                border:1px #dd3 solid; min-width:350px; min-height:280px;" id="district-map">
+        </object>
+      </div>
+      <div id="dv" style="padding:5px; overflow:auto;
+           position:absolute; top:115px; min-width:350px; min-height:280px;">
+      </div>
+      <div id="legend" style="padding:2px; position:absolute;
+           top:118px; left:280px; -moz-border-radius:8px; border:1px solid #dd3;">
+        <table>
+          <tr>
+            <td>
+              <i style="color:#fb8404; font-weight:bold; font-size:0.9em; padding:3px;
+                 -moz-border-radius:5px; cursor:pointer; background-color:#fff;"
+                 onclick="if(getID('tblLegend').style.display == 'none'){
+                 getID('tblLegend').style.display = 'block';
+               } else {
+                 getID('tblLegend').style.display = 'none';
+               }">Legend</i>
+              <table id="tblLegend" border="0" style="background-color:white;
+                     -moz-border-radius:5px; display:none; margin-top:5px;">
+                <tr>
+                  <td align="center"><img src="/images/malawi/greenpin.png" alt="green blob" width="50%" height="50%" /></td>
+                  <td style="font-size:0.8em;">Healthy</td>
+                </tr>
+                <tr>
+                  <td align="center"><img src="/images/malawi/yellowpin.png" alt="yellow blob" width="50%" height="50%" /></td>
+                  <td style="font-size:0.8em;">Warning</td>
+                </tr>
+                <tr>
+                  <td align="center"><img src="/images/malawi/redpin.png" alt="red blob" width="50%" height="50%" /></td>
+                  <td style="font-size:0.8em;">Failure</td>
+                </tr>
+                <tr>
+                  <td align="center"><img src="/images/malawi/bluepin.png" alt="blue blob" width="50%" height="50%" /></td>
+                  <td style="font-size:0.8em;">Offline</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+var current_level = 0.7;
+
+var W3CDOM = (document.createElement && document.getElementsByTagName);
+window.onload 	= init;
+function init(evt) {
+SVGscale(current_level);
+}
+function SVGscale(scale) {
+window.SVGsetDimension(520*scale,560*scale);
+window.SVGsetScale(scale,scale);
+if (!W3CDOM) return;
+var box 	= document.getElementById('district-map');
+box.width  	= 520*scale;
+box.height 	= 560*scale;
+
+var pos = checkCtrl(box);
+
+var slave = document.getElementById('dv');
+slave.style.width  	= 520*scale + "px";
+slave.style.height 	= 560*scale + "px";
+slave.style.top = (pos[2] + 2) + "px";
+
+getID("legend").style.left = (pos[3] + 5) + "px";
+getID("legend").style.top = (pos[2] + 5) + "px";
+
+plot(scale);
+}
+
+var Spiral = function(a) {
+this.initialize(a);
+}
+
+Spiral.prototype = {
+_a: 0.5,
+
+constructor: Spiral,
+
+initialize: function( a ) {
+  if (a != null) this._a = a;
+},
+
+
+/* specify the increment in radians */
+points: function( count, increment ) {
+  var rotations = 5;      // maximum allowable loops
+  var maxAngle = Math.PI * 2 * rotations;
+  var points = new Array();
+
+  var previousX = 0;
+  var previousY = 0;
+  var rounds = 0;
+  var angle = 0;
+                
+  //for (var angle = 0; angle <= maxAngle; angle = angle + increment)
+  while(rounds < count)
+  {
+    var point = this._point( angle );
+
+    if((((Math.abs(point.X) - Math.abs(previousX)) > 13) || (((Math.abs(point.Y) - Math.abs(previousY)) > 13))) ||
+      (point.X == 0 && point.Y == 0)){
+
+      points.push( point );
+
+      rounds++;
+                        
+    }
+
+    previousX = point.X;
+    previousY = point.Y;
+
+    angle = angle + increment;
+  }
+
+  return points;
+},
+
+_point: function( t ) {
+  var x = this._a * t * Math.cos(t);
+  var y = this._a * t * Math.sin(t);
+  return { X: x, Y: y };
+}
+}
+
+</script>
+<script type="text/javascript" language="javascript">
+var selectedSite  = null;
+var url = String(window.location);
+var current_district = null;
+var current_site = null;
+
+url = url.match(/\?district\=(\w+)/);;
+
+if(url){
+current_district = url[1];
+        
+getID("district-label").innerHTML = "<b><i style='color:#fb8404;'>" +
+  url[1].toProperCase() + "</i> <i style='color:#76684E;'>Sites</i></b>";
+
+getID("sitesLabel").innerHTML = url[1].toProperCase() + " Sites";
+                
+getID("district-map").data = url[1] + ".svg";
+            
+var centerMap = [];
+var ulDetails = document.createElement("ul");
+ulDetails.style.listStyle = "none";
+ulDetails.style.padding = "10px";
+                
+getID("districtDetails").appendChild(ulDetails);
+                
+for(var center in sites[url[1]]){
+  var liDetails = document.createElement("li");
+  liDetails.setAttribute("sitename", center);
+  liDetails.style.padding = "10px";
+  liDetails.style.cursor = "pointer";
+  liDetails.style.color = "#76684e";
+  liDetails.id = center.toLowerCase();
+  liDetails.className = "dataUpdate";
+
+  liDetails.onmouseover = function(){
+    this.style.backgroundColor = "#dddd3d";
+    this.style.color = "#000";
+    this.style.fontWeight = "bold";
+  }
+
+  liDetails.onmouseout = function(){
+    this.style.backgroundColor = "";
+    this.style.color = "#76684e";
+    this.style.fontWeight = "normal";
+
+    if(selectedSite){
+      getID(selectedSite).style.backgroundColor = "#fb8404";
+      getID(selectedSite).style.color = "#fff";
+      getID(selectedSite).style.fontWeight = "bold";
+    }
+  }
+
+  liDetails.onclick = function(){
+    current_site = this.id;
+    drawGraph();
+    showDetails(this.getAttribute('sitename'));
+  }
+
+  liDetails.innerHTML = center.toProperCase();
+                    
+  ulDetails.appendChild(liDetails);
+
+  centerMap.push(
+  {
+    "center name":center,
+    "color code":sites[url[1]][center]["color"]
+  }
+);
+}
+
+function showDetails(site){
+  getID("centerLabel").innerHTML = site.toProperCase();
+
+  if(selectedSite){
+    getID(selectedSite).style.backgroundColor = "#fff";
+    getID(selectedSite).style.color = "#76684e";
+    getID(selectedSite).style.fontWeight = "normal";
+  }
+
+  selectedSite = site.toLowerCase();
+  getID(selectedSite).style.backgroundColor = "#fb8404";
+  getID(selectedSite).style.color = "#fff";
+  getID(selectedSite).style.fontWeight = "bold";
+}
+                
+function plot(scale) {
+  var display = getID('dv');
+  display.innerHTML = "";
+                
+  var spiral = new Spiral(scale * 10);
+  var points = spiral.points( centerMap.length, 0.017 * 30 );
+
+  var offsetX = display.offsetWidth / 3;
+  var offsetY = display.offsetHeight / 2.5;
+
+  for (var i = 0, len = points.length; i < len; ++i) {
+    var x = points[i].X + offsetX;
+    var y = points[i].Y + offsetY;
+
+    var image = document.createElement("img");
+    image.style.position = 'absolute';
+                    
+    image.src = centerMap[i]["color code"] + ".png";
+    image.alt = centerMap[i]["center name"];
+    image.style.padding = "10px";
+    image.style.top = (50 + y) + 'px';
+    image.style.left = (40 + x) + 'px';
+    image.id = "tree" + x + "_" + y;
+    image.setAttribute("site", centerMap[i]["center name"]);
+    image.style.cursor = "pointer";
+
+    image.onmouseover = function(){
+      var div = document.createElement("div");
+      var pos = checkCtrl(getID(this.id));
+
+      div.className = "hover";
+      div.style.top = (pos[2] + 50) + "px";
+      div.style.left = (pos[3] + 40) + "px";
+      div.id = "tree" + this.id;
+                            
+      document.body.appendChild(div);
+
+      var divText = document.createElement("div");
+      divText.innerHTML = "<b style='color:#000;'><u>" +
+        getID(this.id).getAttribute("site").toProperCase() + "</u></b>";
+                                                        
+      div.appendChild(divText);
+
+    }
+
+    image.onmouseout = function(){
+      document.body.removeChild(getID("tree" + this.id));
+    }
+
+    image.onclick = function(){
+      current_site = getID(this.id).getAttribute("site").toLowerCase();
+      drawGraph();
+      showDetails( getID(this.id).getAttribute("site").toLowerCase() );
+    }
+
+    display.appendChild(image);
+  }
+}
+}
+
+</script>
+
+<script id="source" language="javascript" type="text/javascript">
+
+function drawGraph() {        
+var options = {
+  lines: { show: true },
+  points: { show: true },
+  xaxis: { tickDecimals: 0, tickSize: 1 }
+};
+var data = [];
+var placeholder = $("#placeholder");
+
+$.plot(placeholder, data, options);
+
+
+// fetch one series, adding to what we got
+var alreadyFetched = {};
+
+// reset data
+data = [];
+alreadyFetched = {};
+
+$.plot(placeholder, data, options);
+
+var iteration = 0;
+
+function fetchData() {
+  ++iteration;
+
+  function onDataReceived(series) {
+    // we get all the data in one go, if we only got partial
+    // data, we could merge it with what we already got
+    data =  series ;
+
+    $.plot($("#placeholder"), data, options);
+  }
+
+  $.ajax({
+    // usually, we'll just call the same URL, a script
+    // connected to a database, but in this case we only
+    // have static example files so we need to modify the
+    // URL
+    url: "/district/graph?district=" + current_district + "&site=" + current_site,
+    method: 'GET',
+    dataType: 'json',
+    success: onDataReceived
+  });
+
+  setTimeout(fetchData, 1000);
+}
+
+setTimeout(fetchData, 1000);
+}
+
+</script>

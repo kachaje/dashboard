@@ -1,0 +1,71 @@
+/**
+This stylesheet is part of the java script calendar and date picker
+ **/
+#calender {
+    width: 100px;
+    font-family: ms sans serif, sans serif;
+    font-size: 7pt;
+}
+
+#calenderTable {
+    border-style: outset;
+    border-width: 2px;
+    border-color: black;
+    background-color: #efefef;
+    display: none;
+    position: absolute;
+    z-index: 1;
+    top: 0px;
+    left: 0px;
+    padding:2px;
+}
+
+#calenderTableHead TR {
+    background-color: #99f;
+}
+
+#calenderTableDays TR {
+    background-color: #B40404;
+    color: #E6E6E6;
+    width:30px;
+    height:30px;
+}
+
+.normalDay {
+    border: 1px dotted black;
+    cursor: pointer;
+    width:30px;
+    height:30px;
+}
+
+.hlDay {
+    border: 1px black;
+    background-color: #585858;
+    color: #E6E6E6;
+    cursor: pointer;
+    width:30px;
+    height:30px;
+}
+
+.toDay {
+    border: 1px solid #E70;
+    background-color: #FD8;
+    color: #E70;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.choosenDay {
+    border: 1px #000000;
+    background-color: #585858;
+    color: #E6E6E6;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.header-cell {
+    color: #fff;
+    background-color: #fb8404;
+    height:30px;
+    width:30px;
+}

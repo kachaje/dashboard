@@ -1,0 +1,563 @@
+
+<script type="text/javascript">
+  var current_level = 0.5;
+
+  var W3CDOM = (document.createElement && document.getElementsByTagName);
+  window.onload 	= init;
+  function init(evt) {
+    SVGscale(0.45);
+  }
+  function SVGscale(scale) {
+    window.SVGsetDimension(375*scale,924*scale);
+    window.SVGsetScale(scale,scale);
+    if (!W3CDOM) return;
+    var box 	= document.getElementById('malawi-map');
+    box.width  	= 375*scale;
+    box.height 	= 924*scale;
+  }
+
+
+  function checkCtrl(obj){
+    var o = obj;
+    var t = o.offsetTop;
+    var l = o.offsetLeft + 1;
+    var w = o.offsetWidth;
+    var h = o.offsetHeight;
+
+    while(o.offsetParent != document.body){
+      o = o.offsetParent;
+      t += o.offsetTop;
+      l += o.offsetLeft;
+    }
+    return Array(w, h, t, l);
+  }
+
+</script>
+
+<center>
+  <div style="margin:10px; border:1px solid #ccc; padding:5px;">
+
+    <table width="100%" cellspacing="0" cellpadding="0" style="background-color:white;">
+      <tr>
+        <td style="border-bottom:olive 1px dotted; background-color:#fff;">
+          <div style="background-color:white;">
+            <img src="images/logo.jpg" style="float:left;
+                 padding-bottom:0px;" alt="logo" />
+          </div>
+        </td>
+        <td style="border-bottom:olive 1px dotted; background-color:#dddd3d; min-width:600px;">
+          <div>
+            <span style="float:right; font-size:1.8em;
+                  color:#fff; font-family:arial;
+                  margin-top:5px; margin-right:15px;">
+              Baobab Health Trust Portal
+            </span>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <button onclick="current_level += 0.1; SVGscale(current_level);"
+                  style="float:left; margin:5px; cursor:pointer;">
+            <img src="/images/zoomin.gif" alt="zoom in" />
+          </button>
+          <button onclick="current_level = 0.45; SVGscale(0.45);"
+                  style="left:85px; position:absolute; margin:5px; cursor:pointer;">
+            <span>100%</span>
+          </button>
+          <button onclick="current_level -= 0.1; SVGscale(current_level);"
+                  style="left:170px; position:absolute; margin:5px; cursor:pointer;">
+            <img src="/images/zoomout.gif" alt="zoom out" />
+          </button>
+        </td>
+        <td style="border-left:olive 1px dotted;" rowspan="2" align="center" valign="top">
+          <table width="98%" border="0" style="margin:10px;">
+            <tr>
+              <td valign="top" style="padding:15px;">
+                <span class="ulHeading">
+                  Internal Resources
+                </span>
+                <ul>
+                  <li><a href="#" target="_blank">Documents</a></li>
+                  <li><a href="http://192.168.5.98:3003/" target="_blank">Help Desk/Project Planner (Redmine)</a></li>
+                  <li><a href="#" target="_blank">Production Dashboard</a></li>
+                  <li><a href="http://picasaweb.google.com/" target="_blank">Picasa Photo Gallery</a></li>
+                  <li><a href="#" target="_blank">Central Reporting</a></li>
+                </ul>
+                <span class="ulHeading">
+                  Systems
+                </span>
+                <ul>
+                  <li><a href="#" target="_blank">BART</a></li>
+                  <li><a href="#" target="_blank">SPINE</a></li>
+                  <li><a href="#" target="_blank">Macro HTC</a></li>
+                  <li><a href="#" target="_blank">DMHT</a></li>
+                  <li><a href="#" target="_blank">Maternity</a></li>
+                  <li><a href="#" target="_blank">OPD</a></li>
+                  <li><a href="#" target="_blank">Stock Management</a></li>
+                </ul>
+                <span class="ulHeading">
+                  News
+                </span>
+                <ul>
+                  <li><a href="#">RSS Feed from Redmine</a></li>
+                </ul>
+              </td>
+              <td align="right">
+
+                <!-- Calender Script  -->
+
+                <table id="calenderTable" cellpadding="5" cellspacing="2" width="100%">
+                  <tbody id="calenderTableHead">
+                    <tr>
+                      <td colspan="3" style="color: #fff;
+                          font-size:1.4em; background-color: #76684e;" align="center">
+                        Shared Calendar
+                      </td>
+                      <td colspan="4" align="center"
+                          style="border-top:1px solid #76684e;
+                          border-left:1px solid #76684e;
+                          border-right:1px solid #76684e;
+                          border-bottom:1px solid #76684e;">
+                        <select onChange="eventsRequest('/home/events?period=' + $('selectYear').value + '-' +
+                            ($('selectMonth').value < 9 ? '0' + (parseInt($('selectMonth').value) + 1) :
+                            (parseInt($('selectMonth').value + 1))));"
+                                id="selectYear" style="font-size:1.2em">
+                        </select>
+                        <select onChange="eventsRequest('/home/events?period=' + $('selectYear').value + '-' +
+                            ($('selectMonth').value < 9 ? '0' + (parseInt($('selectMonth').value) + 1) :
+                            (parseInt($('selectMonth').value) + 1)));"
+                                id="selectMonth" >
+                          <option value="0">January</option>
+                          <option value="1">February</option>
+                          <option value="2">March</option>
+                          <option value="3">April</option>
+                          <option value="4">May</option>
+                          <option value="5">June</option>
+                          <option value="6">July</option>
+                          <option value="7">August</option>
+                          <option value="8">September</option>
+                          <option value="9">October</option>
+                          <option value="10">November</option>
+                          <option value="11">December</option>
+                        </select>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody id="calenderTableDays">
+                    <tr style="">
+                      <td class="header-cell">Sun</td><td class="header-cell">Mon</td><td class="header-cell">Tue</td><td class="header-cell">Wed</td>
+                      <td class="header-cell">Thu</td><td class="header-cell">Fri</td><td class="header-cell">Sat</td>
+                    </tr>
+                  </tbody>
+                  <tbody id="calender"></tbody>
+                </table>
+
+                <!-- End Calender Script  -->
+
+                <div id="eventSummary"></div>
+                <button style="color:white; background-color:#fb8404;
+                        font-size:1.3em; margin:10px; -moz-border-radius:18px; padding:5px;"
+                        onclick="window.location = '/event';">
+                  <span>Add New Event</span>
+                </button>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="200px" style="border-bottom:olive 1px dotted;" align="center" valign="top">
+          <div>
+            <object type="image/svg+xml" data="/images/malawi/mw.svg" wmode="transparent"
+                    style="padding:5px; overflow:hidden;"
+                    id="malawi-map">
+              <!-- NORTH -->
+              <param id="pathkaronga" name="pathKaronga" value="white" alternative="white">
+              <param id="pathchitipa" name="pathChitipa" value="white" alternative="white">
+              <param id="pathrumphi" name="pathRumphi" value="white" alternative="white">
+              <param id="pathmzimba" name="pathMzimba" value="white" alternative="white">
+              <param id="pathlikoma" name="pathLikoma" value="white" alternative="white">
+              <param id="pathnkhatabay" name="pathNkhataBay" value="white" alternative="white">
+
+              <!-- CENTRE -->
+              <param id="pathkasungu" name="pathKasungu" value="white" alternative="white">
+              <param id="pathntchisi" name="pathNtchisi" value="white" alternative="white">
+              <param id="pathdowa" name="pathDowa" value="white" alternative="white">
+              <param id="pathnkhotakota" name="pathNkhotakota" value="white" alternative="white">
+              <param id="pathsalima" name="pathSalima" value="white" alternative="white">
+              <param id="pathmchinji" name="pathMchinji" value="white" alternative="white">
+              <param id="pathdedza" name="pathDedza" value="white" alternative="white">
+              <param id="pathlilongwe" name="pathLilongwe" value="white" alternative="white">
+              <param id="pathntcheu" name="pathNtcheu" value="white" alternative="white">
+
+              <!-- SOUTH -->
+              <param id="pathbalaka" name="pathBalaka" value="white" alternative="white">
+              <param id="pathmwanza" name="pathMwanza" value="white" alternative="white">
+              <param id="pathzomba" name="pathZomba" value="white" alternative="white">
+              <param id="pathphalombe" name="pathPhalombe" value="white" alternative="white">
+              <param id="pathblantyre" name="pathBlantyre" value="white" alternative="white">
+              <param id="pathchikhwawa" name="pathChikhwawa" value="white" alternative="white">
+              <param id="pathnsanje" name="pathNsanje" value="white" alternative="white">
+              <param id="pathmangochi1" name="pathMangochi1" value="white" alternative="white">
+              <param id="pathmangochi2" name="pathMangochi2" value="white" alternative="white">
+              <param id="paththyolo" name="pathThyolo" value="white" alternative="white">
+              <param id="pathmulanje" name="pathMulanje" value="white" alternative="white">
+              <param id="pathchiradzulu" name="pathChiradzulu" value="white" alternative="white">
+              <param id="pathmachinga" name="pathMachinga" value="white" alternative="white">
+            </object>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+
+  </div>
+  <script type="text/javascript" language="javascript" defer>
+    <!--
+
+    var events = <%= @events.to_json %>;
+
+    function eventsRequest(aUrl) {
+      var httpRequest = new XMLHttpRequest();
+      httpRequest.onreadystatechange = function() {
+        handleEventsResult(httpRequest);
+      };
+      try {
+        httpRequest.open('GET', aUrl, true);
+        httpRequest.send(null);
+      } catch(e){
+      }
+    }
+
+  function handleEventsResult(aXMLHttpRequest) {
+    if (!aXMLHttpRequest) return;
+
+    if (aXMLHttpRequest.readyState == 4 && aXMLHttpRequest.status == 200) {
+      events = JSON.parse(aXMLHttpRequest.responseText);
+
+      showCalenderBody(createCalender(document.getElementById('selectYear').value,
+      document.getElementById('selectMonth').selectedIndex, false));
+
+    }
+  }
+
+  // Array of max days in month in a year and in a leap year
+  monthMaxDays	= [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  monthMaxDaysLeap= [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  hideSelectTags = [];
+  var targetEl = false;
+
+  function getRealYear(dateObj)
+  {
+    return (dateObj.getYear() % 100) + (((dateObj.getYear() % 100) < 39) ? 2000 : 1900);
+  }
+
+  function getDaysPerMonth(month, year)
+  {
+    /*
+Check for leap year. These are some conditions to check year is leap year or not...
+1.Years evenly divisible by four are normally leap years, except for...
+2.Years also evenly divisible by 100 are not leap years, except for...
+3.Years also evenly divisible by 400 are leap years.
+     */
+    if ((year % 4) == 0)
+    {
+      if ((year % 100) == 0 && (year % 400) != 0)
+        return monthMaxDays[month];
+
+      return monthMaxDaysLeap[month];
+    }
+    else
+      return monthMaxDays[month];
+  }
+
+  function $(id){
+    return document.getElementById(id);
+  }
+
+  function setYears(sy, ey)
+  {
+    // current Date
+    var curDate = new Date();
+    var curYear = getRealYear(curDate);
+    if (sy)
+      startYear = curYear;
+    if (ey)
+      endYear = curYear;
+    document.getElementById('selectYear').options.length = 0;
+    var j = 0;
+    for (y=ey; y>=sy; y--)
+    {
+      document.getElementById('selectYear')[j++] = new Option(y, y);
+    }
+  }
+
+  function createCalender(year, month, day)
+  {
+    // current Date
+    var curDate = new Date();
+    var curDay = curDate.getDate();
+    var curMonth = curDate.getMonth();
+    var curYear = getRealYear(curDate)
+
+    // if a date already exists, we calculate some values here
+    if (!year)
+    {
+      var year = curYear;
+      var month = curMonth;
+    }
+
+    var yearFound = 0;
+    for (var i=0; i<document.getElementById('selectYear').options.length; i++)
+    {
+      if (document.getElementById('selectYear').options[i].value == year)
+      {
+        document.getElementById('selectYear').selectedIndex = i;
+        yearFound = true;
+        break;
+      }
+    }
+    if (!yearFound)
+    {
+      document.getElementById('selectYear').selectedIndex = 0;
+      year = document.getElementById('selectYear').options[0].value;
+    }
+    document.getElementById('selectMonth').selectedIndex = month;
+
+    // first day of the month.
+    var fristDayOfMonthObj = new Date(year, month, 1);
+    var firstDayOfMonth = fristDayOfMonthObj.getDay();
+
+    continu		= true;
+    firstRow	= true;
+    var x	= 0;
+    var d	= 0;
+    var trs = []
+    var ti = 0;
+    while (d <= getDaysPerMonth(month, year))
+    {
+      if (firstRow)
+      {
+        trs[ti] = document.createElement("TR");
+        if (firstDayOfMonth > 0)
+        {
+          while (x < firstDayOfMonth)
+          {
+            trs[ti].appendChild(document.createElement("TD"));
+            x++;
+          }
+        }
+        firstRow = false;
+        var d = 1;
+      }
+      if (x % 7 == 0)
+      {
+        ti++;
+        trs[ti] = document.createElement("TR");
+      }
+      if (day && d == day)
+      {
+        if(events[day]){
+
+          var setID = 'calenderChoosenDay';
+          var styleClass = 'choosenDay';
+          var setTitle = 'this day is currently selected';
+
+        } else {
+
+          var setID = 'calenderChoosenDay';
+          var styleClass = 'choosenDay';
+          var setTitle = 'this day is currently selected';
+                            
+        }
+                            
+      }
+      else if (d == curDay && month == curMonth && year == curYear)
+      {
+        if(events[d]){
+
+          var setID = 'calenderChoosenDay';
+          var styleClass = 'choosenDay';
+          var setTitle = 'this day has ' + events[d].length + " events";
+
+        } else {
+          var setID = 'calenderToDay';
+          var styleClass = 'toDay';
+          var setTitle = 'this day today';
+        }
+      }
+      else
+      {
+        if(events[d]){
+
+          var setID = 'calenderChoosenDay';
+          var styleClass = 'choosenDay';
+          var setTitle = 'this day has ' + events[d].length + " events";
+
+        } else {
+
+          var setID = false;
+          var styleClass = 'normalDay';
+          var setTitle = false;
+
+        }
+                            
+      }
+      var td = document.createElement("TD");
+      td.className = styleClass;
+      if (setID)
+      {
+        td.id = setID;
+      }
+      if (setTitle)
+      {
+        td.title = setTitle;
+      }
+      td.onmouseover = new Function('highLiteDay(this)');
+      td.onmouseout = new Function('deHighLiteDay(this)');
+      if (td.className == "choosenDay")
+        td.onclick = function(){
+          if($("eventSummary").style.display == "block"){
+            $("eventSummary").style.display = "none";
+          } else {
+            var params = checkCtrl(this);
+            $("eventSummary").style.top = params[2] + "px";
+            $("eventSummary").style.left = (params[3] - this.style.width - 405) + "px";
+            $("eventSummary").style.display = "block";
+          }
+      }
+      else
+        td.style.cursor = 'default';
+      td.appendChild(document.createTextNode(d));
+      trs[ti].appendChild(td);
+      x++;
+      d++;
+    }
+    return trs;
+  }
+
+    
+
+  function showCalenderBody(trs)
+  {
+    var calTBody = document.getElementById('calender');
+    while (calTBody.childNodes[0])
+    {
+      calTBody.removeChild(calTBody.childNodes[0]);
+    }
+    for (var i in trs)
+    {
+      calTBody.appendChild(trs[i]);
+    }
+  }
+
+  function highLiteDay(el)
+  {
+    el.className = 'hlDay';
+  }
+
+  function deHighLiteDay(el)
+  {
+    if (el.id == 'calenderToDay')
+      el.className = 'toDay';
+    else if (el.id == 'calenderChoosenDay')
+      el.className = 'choosenDay';
+    else
+      el.className = 'normalDay';
+  }
+
+  var d = new Date();
+
+  setYears(d.getFullYear()-10, d.getFullYear()+10);
+
+  //trs = createCalender(d.getFullYear(), d.getMonth(), d.getDate());
+  trs = createCalender(false, false, false);
+  showCalenderBody(trs);
+
+  //-->
+  </script>
+
+  <script type="text/javascript" language="javascript" defer>
+  <!--
+
+  for(var site in sites){
+    var colorCode = null;
+    var codeRed = null;
+    var codeGreen = null;
+    var codeYellow = null;
+    var codeBlue = null;
+
+    for(var center in sites[site]){
+      switch(sites[site][center]["color"]){
+        case "red":
+          codeRed = true;
+          break;
+        case "green":
+          codeGreen = true;
+          break;
+        case "yellow":
+          codeYellow = true;
+        case "blue":
+          codeBlue = true;
+      }
+    }
+                                                                
+    if(codeRed){
+                        
+      if(site == "mangochi"){
+        $("pathmangochi1").value = "red";
+        $("pathmangochi1").setAttribute("alternative", "white");
+
+        $("pathmangochi2").value = "red";
+        $("pathmangochi2").setAttribute("alternative", "white");
+      } else {
+        $("path" + site).value = "red";
+        $("path" + site).setAttribute("alternative", "white");
+      }
+                        
+    } else if(codeYellow){
+
+      if(site == "mangochi"){
+        $("pathmangochi1").value = "yellow";
+        $("pathmangochi1").setAttribute("alternative", "yellow");
+
+        $("pathmangochi2").value = "yellow";
+        $("pathmangochi2").setAttribute("alternative", "yellow");
+      } else {
+        $("path" + site).value = "yellow";
+        $("path" + site).setAttribute("alternative", "yellow");
+      }
+
+    }  else if(codeBlue){
+
+      if(site == "mangochi"){
+        $("pathmangochi1").value = "#99f";
+        $("pathmangochi1").setAttribute("alternative", "#99f");
+
+        $("pathmangochi2").value = "#99f";
+        $("pathmangochi2").setAttribute("alternative", "#99f");
+      } else {
+        $("path" + site).value = "#99f";
+        $("path" + site).setAttribute("alternative", "#99f");
+      }
+
+    }else if(codeGreen){
+                        
+      if(site == "mangochi"){
+        $("pathmangochi1").value = "limegreen";
+        $("pathmangochi1").setAttribute("alternative", "limegreen");
+
+        $("pathmangochi2").value = "limegreen";
+        $("pathmangochi2").setAttribute("alternative", "limegreen");
+      } else {
+        $("path" + site).value = "limegreen";
+        $("path" + site).setAttribute("alternative", "limegreen");
+      }
+                        
+    }
+  }
+
+  //-->
+  </script>
+</center>

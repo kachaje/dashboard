@@ -1,0 +1,4 @@
+{
+    label: 'Battery Voltage',
+    data: [[7, 3.0], [8, 3.9]]
+}
