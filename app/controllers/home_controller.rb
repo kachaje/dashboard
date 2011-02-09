@@ -12,5 +12,16 @@ class HomeController < ApplicationController
 
     render :text => @events.to_json
   end
+
+  def remove_event
+    if params[:element]
+      event = Event.find(params[:element])
+
+      event.update_attribute(:voided, 1)
+    end
+    @events = Event.events(params[:period])
+
+    render :text => @events.to_json
+  end
   
 end

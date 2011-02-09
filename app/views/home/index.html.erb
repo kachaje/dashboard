@@ -155,7 +155,7 @@
 
                 <!-- End Calender Script  -->
 
-                <div id="eventSummary"></div>
+                <div id="eventSummary" style="text-align:justify; overflow: hidden;"></div>
                 <button style="color:white; background-color:#fb8404;
                         font-size:1.3em; margin:10px; -moz-border-radius:18px; padding:5px;"
                         onclick="window.location = '/event';">
@@ -393,7 +393,7 @@ Check for leap year. These are some conditions to check year is leap year or not
 
           var setID = 'calenderChoosenDay';
           var styleClass = 'choosenDay';
-          var setTitle = 'this day has ' + events[d].length + " events";
+          var setTitle = 'this day has ' + events[d].length + " events.";
 
         } else {
 
@@ -406,6 +406,9 @@ Check for leap year. These are some conditions to check year is leap year or not
       }
       var td = document.createElement("TD");
       td.className = styleClass;
+
+      td.setAttribute("pos", d);
+      
       if (setID)
       {
         td.id = setID;
@@ -419,12 +422,30 @@ Check for leap year. These are some conditions to check year is leap year or not
       if (td.className == "choosenDay")
         td.onclick = function(){
           if($("eventSummary").style.display == "block"){
+            $("eventSummary").innerHTML = "";
             $("eventSummary").style.display = "none";
           } else {
             var params = checkCtrl(this);
             $("eventSummary").style.top = params[2] + "px";
-            $("eventSummary").style.left = (params[3] - this.style.width - 405) + "px";
+            $("eventSummary").style.left = (params[3] - this.style.width - 605) + "px";
+            $("eventSummary").innerHTML = "<div style='margin:10px; " +
+              "overflow: auto; height: 90%; width:95%; border:#dd3 1px solid;'><ol id='innerText' style='padding-left:0px;'></ol></div>";
             $("eventSummary").style.display = "block";
+            var element = events[this.getAttribute("pos")];
+
+            for(var i = 0; i < events[this.getAttribute("pos")].length; i++){
+              $("innerText").innerHTML += "<li style='" + (i%2 == 0 ? "background-color: #eee" : "border:#eee 1px solid") +
+                "; padding:5px;'><b>Author:</b> <i>" + element[i][0] +
+                "</i><div style='float:right; cursor:pointer;' onclick=\"var response=confirm(\'Are you sure you want to void this entry?\'); " +
+                "\nif(response){eventsRequest('/home/remove_event?element=" + 
+                element[i][2] + "&period=" +  $('selectYear').value + '-' + ($('selectMonth').value < 9 ? '0' +
+                (parseInt($('selectMonth').value) + 1) : (parseInt($('selectMonth').value) + 1)) +
+                "');}; $('eventSummary').style.display = 'none'; \"><img src='/images/cancel_flat_small_red.png' /></div>" +
+                "<br /><blockquote><u><b>Event Description</b></u><br />" + element[i][1] +
+                "</blockquote></li>";
+            }
+            
+            //$("eventSummary").innerHTML += "</div>";
           }
       }
       else

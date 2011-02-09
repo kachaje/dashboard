@@ -84,8 +84,8 @@ body,td,th {
 #eventSummary {
      display:none;
      position:absolute;
-     width:400px;
-     height:200px;
+     width:600px;
+     height:300px;
      border: 3px #fb8404 solid;
      background-color: #fff;
      overflow:auto;
