@@ -1,0 +1,63 @@
+#!/usr/bin/ruby
+require "rubygems"
+require "rest_client"
+
+url = "http://192.168.15.253"
+
+wait_interval = 600 # 10mins in seconds
+
+cutoff = 11.20 # V
+
+filelimit = 100  # MB
+
+lastfile = ((Dir.open("log/").collect.length - 2) > 0 ? ((Dir.open("log/").collect.length - 2) - 1) : 
+    (Dir.open("log/").collect.length - 2))
+
+def repeat_every(interval)
+  Thread.new do
+    loop do
+      start_time = Time.now
+      yield
+      elapsed = Time.now - start_time
+      sleep([interval - elapsed, 0].max)
+    end
+  end
+end
+
+thread = repeat_every(wait_interval) do
+  
+  result = RestClient.get(url).scan(/Battery\s(\d+)\sis\s(\d+\.\d+)/) rescue []
+
+  if File::exists?("log/logger#{lastfile}.csv") == false
+    File.open("log/logger#{lastfile}.csv", "w") do |file|
+      file.puts "Time,Battery 1,Battery 2,Battery 3,Battery 4\n"
+    end
+  elsif ((File.size("log/logger#{lastfile}.csv").to_f / 1024000) > filelimit) == true
+    lastfile += 1
+    File.open("log/logger#{lastfile}.csv", "w") do |file|
+      file.puts "Time,Battery 1,Battery 2,Battery 3,Battery 4\n"
+    end
+  end
+
+  File.open("log/logger#{lastfile}.csv", "a+") do |file|
+    str = Time.now.strftime("%Y-%m-%d %H:%M:%S") + ","
+    
+    sum = 0.00
+    
+    (0..(result.length - 1)).each{|r|
+      str += result[r][1] + (r < (result.length - 1) ? "," : "")
+      sum += result[r][1].to_f
+    }
+    file.puts str
+    
+    avg = sum / result.length.to_f
+    
+    if avg <= cutoff
+      system "shutdown -h now"
+      break
+    end
+  end
+
+end  
+
+thread.join
