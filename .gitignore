@@ -12,3 +12,4 @@ schema.rb
 mockups
 nbproject
 log/
+log/development.log
