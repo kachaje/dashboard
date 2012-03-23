@@ -1,4 +1,61 @@
+<script type="text/javascript">
+  <!--
+           
+  var response = null;
+      
+  function __$(id){
+    return document.getElementById(id);
+  }
+    
+  function ajaxRequest(aUrl, method) {
+    var httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = function() {
+      handleResult(httpRequest, method);
+    };
+    try { 
+      httpRequest.open('GET', aUrl, true);
+      httpRequest.setRequestHeader("Cache-Control", "no-cache")
+      httpRequest.send(null);
+    } catch(e){
+    }
+  }
 
+  function handleResult(aXMLHttpRequest, method) {    
+    if (aXMLHttpRequest){
+      if (aXMLHttpRequest.readyState == 4 && (aXMLHttpRequest.status == 200 || aXMLHttpRequest.status == 304)) {
+        var result = aXMLHttpRequest.responseText;
+        
+        response = result;
+            
+        eval(method);
+      }
+    }
+  } 
+  
+  function changeState(){
+    if(response == "up"){            
+      __$("siteState").onclick = function(){
+        ajaxRequest("/district/state?district=" + current_district + "&site=" + 
+          current_site + "&state=down", "changeState()");
+      }
+      
+      __$("siteState").style.backgroundColor = "green";
+      __$("siteState").innerHTML = "Mark Site Down";
+      __$("siteState").style.display = "block";    
+    } else {            
+      __$("siteState").onclick = function(){
+        ajaxRequest("/district/state?district=" + current_district + "&site=" + 
+          current_site + "&state=up", "changeState()");
+      }
+      
+      __$("siteState").style.backgroundColor = "red";
+      __$("siteState").innerHTML = "Mark Site Up";
+      __$("siteState").style.display = "block";
+    }
+  }
+  
+  //-->
+</script>
 
 <table border="0" width="100%">
   <tr>
@@ -56,8 +113,11 @@
             <form id="frmNewSite" action="/district/create_site" method="post">
               <table>
                 <tr>
+                  <td>
+                    &nbsp;
+                  </td>
                   <td align="center">
-                    Sitename
+                    
                   </td>
                   <td>
 
@@ -65,12 +125,15 @@
                 </tr>
                 <tr>
                   <td>
+                    Sitename
+                  </td>
+                  <td>
                     <input type="text" id="sitename" name="sitename" value="" />
                     <input type="hidden" id="district" name="district" value="<%= params[:district]  %> " />
                   </td>
                   <td align="center">
                     <input type="button" style="color:white; background-color:#fb8404;
-                           font-size:1.0em; -moz-border-radius:18px; padding:5px;"
+                           font-size:1.0em; -moz-border-radius:18px; padding:5px; cursor: pointer;"
                            onclick="if(getID('sitename').value.match(/^(\s+)?$/)) {
                              alert('Please enter a valid sitename first before proceeding!');
                              return;
@@ -79,10 +142,46 @@
                            }" value="Add New Site" />
 
                   </td>
+                </tr>                
+                <tr>
+                  <td>
+                    Longitude
+                  </td>
+                  <td>
+                    <input type="text" id="longitude" name="longitude" value="" />
+                  </td>
+                </tr>               
+                <tr>
+                  <td>
+                    Latitude
+                  </td>
+                  <td>
+                    <input type="text" id="latitude" name="latitude" value="" />
+                  </td>
+                </tr>              
+                <tr>
+                  <td>
+                    Site Type
+                  </td>
+                  <td>
+                    <select name="sitetype" id="sitetype" style="width: 100%;" >
+                      <option> </option>
+                      <option>Central Hospital</option>
+                      <option>District Hospital</option>
+                      <option>Health Center</option>
+                      <option>Other</option>
+                    </select>
+                  </td>
                 </tr>
               </table>
             </form>
 
+            <button id="siteState" style="color:white; background-color:red; 
+                    width: 48%; margin-top: 20px; cursor: pointer;
+                    font-size:1.0em; -moz-border-radius:18px; padding:5px; 
+                    font-weight: bold; display: none;">
+              Mark Site Down
+            </button>
           </td>
         </tr>
       </table>
@@ -277,6 +376,11 @@ for(var center in sites[url[1]]){
 
   liDetails.onclick = function(){
     current_site = this.id;
+    
+    __$("siteState").style.display = "none";
+    
+    ajaxRequest("/district/state?district=" + current_district + "&site=" + current_site, "changeState()");
+    
     drawGraph();
     showDetails(this.getAttribute('sitename'));
   }
@@ -359,6 +463,11 @@ function plot(scale) {
 
     image.onclick = function(){
       current_site = getID(this.id).getAttribute("site").toLowerCase();
+    
+      __$("siteState").style.display = "none";    
+    
+      ajaxRequest("/district/state?district=" + current_district + "&site=" + current_site, "changeState()");
+    
       drawGraph();
       showDetails( getID(this.id).getAttribute("site").toLowerCase() );
     }
