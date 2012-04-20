@@ -10,8 +10,9 @@ cutoff = 11.20 # V
 
 filelimit = 100  # MB
 
-lastfile = ((Dir.open("log/").collect.length - 2) > 0 ? ((Dir.open("log/").collect.length - 2) - 1) : 
-    (Dir.open("log/").collect.length - 2))
+lastfile = ((Dir.open("/var/www/dashboard/client/log/").collect.length - 2) > 0 ? 
+    ((Dir.open("/var/www/dashboard/client/log/").collect.length - 2) - 1) : 
+    (Dir.open("/var/www/dashboard/client/log/").collect.length - 2))
 
 def repeat_every(interval)
   Thread.new do
@@ -28,18 +29,18 @@ thread = repeat_every(wait_interval) do
   
   result = RestClient.get(url).scan(/Battery\s(\d+)\sis\s(\d+\.\d+)/) rescue []
 
-  if File::exists?("log/logger#{lastfile}.csv") == false
-    File.open("log/logger#{lastfile}.csv", "w") do |file|
+  if File::exists?("/var/www/dashboard/client/log/logger#{lastfile}.csv") == false
+    File.open("/var/www/dashboard/client/log/logger#{lastfile}.csv", "w") do |file|
       file.puts "Time,Battery 1,Battery 2,Battery 3,Battery 4\n"
     end
-  elsif ((File.size("log/logger#{lastfile}.csv").to_f / 1024000) > filelimit) == true
+  elsif ((File.size("/var/www/dashboard/client/log/logger#{lastfile}.csv").to_f / 1024000) > filelimit) == true
     lastfile += 1
-    File.open("log/logger#{lastfile}.csv", "w") do |file|
+    File.open("/var/www/dashboard/client/log/logger#{lastfile}.csv", "w") do |file|
       file.puts "Time,Battery 1,Battery 2,Battery 3,Battery 4\n"
     end
   end
 
-  File.open("log/logger#{lastfile}.csv", "a+") do |file|
+  File.open("/var/www/dashboard/client/log/logger#{lastfile}.csv", "a+") do |file|
     str = Time.now.strftime("%Y-%m-%d %H:%M:%S") + ","
     
     sum = 0.00
